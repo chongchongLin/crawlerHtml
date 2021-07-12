@@ -1,16 +1,25 @@
 const http = require('http');
+const https = require('https')   
+
 let cheerio = require('cheerio');
 const fs = require('fs');
 const pageUrl = '';
-http.get(pageUrl,(res)=>{
-    let html = '';
-    res.on('data',(data)=>{
-        html+=data
+
+crawleHtml(pageUrl)
+
+function crawleHtml(pageUrl){
+    let way = pageUrl.includes('s') ? https :http;
+    way.get(pageUrl,(res)=>{
+        let html = '';
+        res.on('data',(data)=>{
+            html+=data
+        })
+        res.on('end',()=>{
+            console.log('html',html)
+            callback(html)
+        })
     })
-    res.on('end',()=>{
-        callback(html)
-    })
-})
+}
 
 function callback(html){
     let $ = cheerio.load(html);
